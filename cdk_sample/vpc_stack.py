@@ -46,16 +46,16 @@ class VpcStack(Stack):
                                        subnet_selection=ec2.SubnetSelection(subnets=isolated_subnets)
                                        )
 
-        for id, subnet in enumerate(private_subnets, start=1):
-            isolated_nacl.add_entry("DbNACLIngress{0}".format(id * 100),
-                                    rule_number=id * 100,
+        for subnet_id, subnet in enumerate(private_subnets, start=1):
+            isolated_nacl.add_entry("DbNACLIngress{0}".format(subnet_id * 100),
+                                    rule_number=subnet_id * 100,
                                     cidr=ec2.AclCidr.ipv4(subnet.node.default_child.cidr_block),
                                     traffic=ec2.AclTraffic.tcp_port_range(db_port, db_port),
                                     rule_action=ec2.Action.ALLOW,
                                     direction=ec2.TrafficDirection.INGRESS
                                     )
-            isolated_nacl.add_entry("DbNACLEgress{0}".format(id * 100),
-                                    rule_number=id * 100,
+            isolated_nacl.add_entry("DbNACLEgress{0}".format(subnet_id * 100),
+                                    rule_number=subnet_id * 100,
                                     cidr=ec2.AclCidr.ipv4(subnet.node.default_child.cidr_block),
                                     traffic=ec2.AclTraffic.tcp_port_range(1024, 65535),
                                     rule_action=ec2.Action.ALLOW,
