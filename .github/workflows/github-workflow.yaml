@@ -40,7 +40,6 @@ jobs:
       - name: Setep env
         run: |
           echo "B='b env val'" >> $GITHUB_ENV
-          printenv
 
       - if: always()
         run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
@@ -54,10 +53,10 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
-          ls ${{ github.event.inputs.account }}
-          ls ${{ github.event.inputs.account-number }}
-          ls ${{ github.event.inputs.environment }}
-          ls ${{ github.event.inputs.conditional-step == 'true' }}
+          echo ${{ github.event.inputs.account }}
+          echo ${{ github.event.inputs.account-number }}
+          echo ${{ github.event.inputs.environment }}
+          echo ${{ github.event.inputs.conditional-step == 'true' }}
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
       - id: foo
@@ -66,3 +65,5 @@ jobs:
           input-value: 'Sub action input'
       - run: echo "Sub action return value ${{ steps.foo.outputs.value1 }}"
         shell: bash
+      - name: Print environment
+        run: printenv
