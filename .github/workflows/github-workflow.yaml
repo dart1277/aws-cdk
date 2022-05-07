@@ -1,0 +1,68 @@
+name: GitHub Actions Demo
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      account:
+        type: choice
+        description: Select account type
+        required: true
+        options:
+        - dev
+        - test
+      account-number:
+        required: false
+        description: account number
+        default: '1234'
+      conditional-step:
+        type: boolean
+        description: Include 🎉🤣 emojis
+        required: false
+      environment:
+        type: environment
+        required: false
+        description: Environment to use
+jobs:
+  build:
+    runs-on: ubuntu-latest # [self-hosted, linux]
+    name: Build and test
+    env:
+      A: 'b'
+    defaults:
+      run:
+        working-directory: '.'
+    steps:
+      - name: Setep env
+        run: |
+          echo "B='b env val'" >> $GITHUB_ENV
+          printenv
+
+      - if: always()
+        run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+
+      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}
+          ls ${{ github.event.inputs.account }}
+          ls ${{ github.event.inputs.account-number }}
+          ls ${{ github.event.inputs.environment }}
+          ls ${{ github.event.inputs.conditional-step == 'true' }}
+
+      - run: echo "🍏 This job's status is ${{ job.status }}."
+      - id: foo
+        uses: ./actions/action1 # actions/hello-world-composite-action@v1 # https://docs.github.com/en/actions/creating-actions/creating-a-composite-action
+        with:
+          input-value: 'Sub action input'
+      - run: echo "Sub action return value ${{ steps.foo.outputs.value1 }}"
+        shell: bash

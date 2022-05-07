@@ -1,0 +1,23 @@
+name: 'Hello World'
+description: 'Greet someone'
+inputs:
+  input-value:  # id of input
+    description: 'Who to greet'
+    required: true
+    default: 'You'
+outputs:
+  value1:
+    description: "Random number"
+    value: ${{ steps.random-number-generator.outputs.random-id }}
+runs:
+  using: "composite"
+  steps:
+    - run: echo ${{ inputs.input-value}}
+      shell: bash
+    - run: echo ${{github.action_path}}
+      shell: bash
+    - id: random-number-generator
+      run: echo "::set-output name=value1::$(echo $RANDOM)"
+      shell: bash
+    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
+      shell: bash
