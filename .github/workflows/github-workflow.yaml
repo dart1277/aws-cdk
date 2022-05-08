@@ -48,7 +48,6 @@ jobs:
       - run: echo "Event path ${{ github.event_path }}"
       - run: echo "Job ${{ github.job }}"
       - run: echo "Ref name ${{ github.ref_name }}"
-      - run: echo "Path ${{ github.path }}"
       - run: echo "Ref type ${{ github.ref_type }}"
       - run: echo "Run attempt ${{ github.run_attempt }}"
       - run: echo "Run number ${{ github.run_number }}"
@@ -70,8 +69,9 @@ jobs:
       - id: foo
         uses: ./.github/workflows/action1 # actions/hello-world-composite-action@v1 # https://docs.github.com/en/actions/creating-actions/creating-a-composite-action
         with:
-          input-value: 'Sub action input'
+          input-value: 'Sub action input value'
       - run: echo "Sub action return value ${{ steps.foo.outputs.value1 }}"
         shell: bash
       - name: Print environment
         run: printenv
+      - run: echo "Github path ${{ github.path }}"

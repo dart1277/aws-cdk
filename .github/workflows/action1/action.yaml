@@ -8,15 +8,15 @@ inputs:
 outputs:
   value1:
     description: "Random number"
-    value: ${{ steps.random-number-generator.outputs.random-id }}
+    value: ${{ steps.random-num.outputs.value1 }}
 runs:
   using: "composite"
   steps:
-    - run: echo ${{ inputs.input-value}}
+    - run: echo ${{ inputs.input-value }}
       shell: bash
-    - run: echo ${{github.action_path}}
+    - run: echo ${{github.action_path }}
       shell: bash
-    - id: random-number-generator
+    - id: random-num
       run: echo "::set-output name=value1::$(echo $RANDOM)"
       shell: bash
     - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
