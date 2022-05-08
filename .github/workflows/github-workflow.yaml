@@ -76,3 +76,4 @@ jobs:
       - name: Print environment
         run: printenv
       - run: echo "Github path ${{ github.path }}"
+      - run: echo "Secret VAL1 ${{ secrets.VAL1 }}"
