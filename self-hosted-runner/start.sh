@@ -5,7 +5,6 @@ ACCESS_TOKEN=$ACCESS_TOKEN
 
 REG_TOKEN=$(curl -sX POST -H "Authorization: token ${ACCESS_TOKEN}" https://api.github.com/repos/${ORGANIZATION}/actions/runners/registration-token | jq .token --raw-output)
 
-echo "TOKEN: $REG_TOKEN"
 
 cd /home/docker/actions-runner
 
