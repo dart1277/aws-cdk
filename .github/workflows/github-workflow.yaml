@@ -67,6 +67,7 @@ jobs:
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
       - id: foo
+        name: Run sub action
         uses: ./.github/workflows/action1 # actions/hello-world-composite-action@v1 # https://docs.github.com/en/actions/creating-actions/creating-a-composite-action
         with:
           input-value: 'Sub action input value'
