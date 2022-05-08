@@ -30,7 +30,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest # [self-hosted, linux]
-    name: Build and test
+    name: Build and test demo job
     env:
       A: 'b'
     defaults:
