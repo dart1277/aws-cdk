@@ -75,7 +75,7 @@ jobs:
           echo ${{ github.event.inputs.account-number }}
           echo ${{ github.event.inputs.environment }}
           echo ${{ env.CURRENT_BRANCH }}
-          echo ${{ github.event.inputs.conditional-step == 'true' }}
+          echo ${{ github.event.inputs.conditional-step == 'true' ? 'cond-a' : 'cond-b' }}
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
       - id: foo
