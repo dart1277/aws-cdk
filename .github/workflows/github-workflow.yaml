@@ -27,17 +27,14 @@ on:
         type: environment
         required: false
         description: Environment to use
-      runner-os:
-        type: choice
-        description: Select account type
+      branch-name:
+        description: "Branch name to run the build for"
         required: true
-        default: [self-hosted, Linux]
-        options:
-        - self-hosted
-        - ubuntu-latest
+        default: ${{ github.ref_name }}
+
 jobs:
   build:
-    runs-on: ${{ github.event.inputs.runner-os }} # ubuntu-latest # [self-hosted, Linux] #
+    runs-on: ubuntu-latest # [self-hosted, Linux] #
     name: Build and test demo job
     env:
       A: 'b'
@@ -71,6 +68,7 @@ jobs:
           echo ${{ github.event.inputs.account }}
           echo ${{ github.event.inputs.account-number }}
           echo ${{ github.event.inputs.environment }}
+          echo ${{ github.event.inputs.branch-name }}
           echo ${{ github.event.inputs.conditional-step == 'true' }}
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
