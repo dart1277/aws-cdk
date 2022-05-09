@@ -27,3 +27,11 @@ jobs:
           echo "${{ env.B }}" # does not support environment propagation
       - id: step2
         run: echo "::set-output name=outputa::output-a-value 1"
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "reusable workflow 2nd step"
+        shell: bash
+        name: Reusable deploy step
