@@ -29,8 +29,7 @@ on:
         description: Environment to use
       branch-name:
         description: "Branch name to run the build for"
-        required: true
-        default: ${{ github.ref_name }}
+        required: false
 
 jobs:
   build:
@@ -68,7 +67,7 @@ jobs:
           echo ${{ github.event.inputs.account }}
           echo ${{ github.event.inputs.account-number }}
           echo ${{ github.event.inputs.environment }}
-          echo ${{ github.event.inputs.branch-name }}
+          echo $(${{ github.event.inputs.branch-name }} || ${{ github.ref_name }} )
           echo ${{ github.event.inputs.conditional-step == 'true' }}
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
