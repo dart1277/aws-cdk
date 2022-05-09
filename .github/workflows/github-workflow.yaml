@@ -104,8 +104,9 @@ jobs:
   reusableWOut:
     runs-on: ubuntu-latest
     name: Reusable job out
+    needs: resusableW
     steps:
-      - run: echo ${{ jobs.resusableW.outputs.out1 }}
+      - run: echo ${{ needs.resusableW.outputs.out1 }}
         name: Print reusable output
         shell: bash
 
