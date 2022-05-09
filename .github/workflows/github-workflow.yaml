@@ -96,7 +96,7 @@ jobs:
   resusableW:
     runs-on: ubuntu-latest
     name: Reusable job call
-    uses: ./github/workflows/reusable.yaml@main
+    uses: ./.github/workflows/reusable.yaml@${{github.ref_name}}
     with:
       image: 'img1 value'
     secrets:
