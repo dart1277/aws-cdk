@@ -38,6 +38,7 @@ env:
   #CURRENT_BRANCH: "$([ -z '${{ github.event.inputs.branch-name }}'  ] && echo ${{ github.ref_name }} || echo ${{ github.event.inputs.branch-name }})"
   CURRENT_BRANCH: "${{ !github.event.inputs.branch-name && github.ref_name || github.event.inputs.branch-name }}"
   SECRET_VAL1: "$([ -z '${{ github.event.inputs.secret-val1 }}'  ] && echo ${{ secrets.VAL1 }} || echo '${{ github.event.inputs.secret-val1 }}')"
+  B: 'b env'
 
 jobs:
   build:
@@ -91,3 +92,21 @@ jobs:
       - run: echo "Github path ${{ github.path }}"
       - run: echo "Secret VAL1 ${{ secrets.VAL1 }}"
       - run: echo "Secret env.VAL1 ${{ env.SECRET_VAL1 }}"
+
+  resusableW:
+    runs-on: ubuntu-latest
+    name: Reusable job call
+    uses: ./github/workflows/reusable.yaml@${{ github.ref_name }}
+    with:
+      image: 'img1 value'
+    secrets:
+      secret1: ${{ env.SECRET_VAL1 }}
+
+  reusableWOut:
+    runs-on: ubuntu-latest
+    name: Reusable job out
+    steps:
+      - run: echo ${{ jobs.resusableW.outputs.out1 }}
+        name: Print reusable output
+        shell: bash
+
