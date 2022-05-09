@@ -94,6 +94,7 @@ jobs:
       - run: echo "Secret env.VAL1 ${{ env.SECRET_VAL1 }}"
 
   resusableW:
+    needs: build
     name: Reusable job call
     uses: ./.github/workflows/reusable.yaml
     with:
