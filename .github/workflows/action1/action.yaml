@@ -24,3 +24,8 @@ runs:
     - shell: bash
       run: |
         echo "Parent env val: $B"
+    - id: foo2
+      name: Run nested sub action
+      uses: ./.github/workflows/action2 # actions/hello-world-composite-action@v1 # https://docs.github.com/en/actions/creating-actions/creating-a-composite-action
+      with:
+        input-value: 'Nested sub action input value'

@@ -1,0 +1,14 @@
+name: 'Hello World'
+description: 'Greet someone'
+inputs:
+  input-value:  # id of input
+    description: 'Who to greet'
+    required: true
+    default: 'You'
+runs:
+  using: "composite"
+  steps:
+    - run: echo ${{ inputs.input-value }}
+      shell: bash
+    - run: echo "Nested action"
+      shell: bash
