@@ -30,10 +30,13 @@ on:
       branch-name:
         description: "Branch name to run the build for"
         required: false
+      secret-val1:
+        description: "Secret value"
+        required: false
 
 env:
   CURRENT_BRANCH: "$([ -z '${{ github.event.inputs.branch-name }}'  ] && echo ${{ github.ref_name }} || echo ${{ github.event.inputs.branch-name }})"
-  SECRET_VAL1: ${{ secrets.VAL1 }}
+  SECRET_VAL1: "$([ -z '${{ github.event.inputs.secret-val1 }}'  ] && echo ${{ secrets.VAL1 }} || echo '${{ github.event.inputs.secret-val1 }}')"
 
 jobs:
   build:
