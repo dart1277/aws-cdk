@@ -32,7 +32,7 @@ on:
         required: false
 
 env:
-  CURRENT_BRANCH: "$([ -z '${{ github.event.inputs.branch-name }}'  ] && echo ${{ github.ref_name }} || echo ${{ github.event.inputs.branch-name }})"
+  CURRENT_BRANCH: "[ -z '${{ github.event.inputs.branch-name }}'  ] && echo ${{ github.ref_name }} || echo ${{ github.event.inputs.branch-name }}"
 
 jobs:
   build:
