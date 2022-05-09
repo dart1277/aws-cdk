@@ -99,7 +99,7 @@ jobs:
     with:
       image: 'img1 value'
     secrets:
-      secret1: ${{ env.SECRET_VAL1 }}
+      secret1: ${{ secrets.VAL1 }}
 
   reusableWOut:
     runs-on: ubuntu-latest
