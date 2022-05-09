@@ -31,6 +31,9 @@ on:
         description: "Branch name to run the build for"
         required: false
 
+env:
+  CURRENT_BRANCH: "$([ -z '${{ github.event.inputs.branch-name }}'  ] && echo ${{ github.ref_name }} || echo ${{ github.event.inputs.branch-name }})"
+
 jobs:
   build:
     runs-on: ubuntu-latest # [self-hosted, Linux] #
@@ -67,7 +70,7 @@ jobs:
           echo ${{ github.event.inputs.account }}
           echo ${{ github.event.inputs.account-number }}
           echo ${{ github.event.inputs.environment }}
-          echo $(${{ github.event.inputs.branch-name }} || ${{ github.ref_name }} )
+          echo ${{ env.CURRENT_BRANCH }}
           echo ${{ github.event.inputs.conditional-step == 'true' }}
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
