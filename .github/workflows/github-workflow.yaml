@@ -106,8 +106,11 @@ jobs:
     runs-on: ubuntu-latest
     name: Reusable job out
     needs: resusableW
+    strategy:
+      matrix:
+        version: [10, 12]
     steps:
-      - run: echo ${{ needs.resusableW.outputs.out1 }}
+      - run: echo ${{ needs.resusableW.outputs.out1 }} ${{ matrix.version }}
         name: Print reusable output
         shell: bash
 
