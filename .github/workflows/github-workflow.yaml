@@ -18,7 +18,7 @@ on:
       account-number:
         required: false
         description: account number
-        default: '12345'
+        default: '123456'
       conditional-step:
         type: boolean
         description: Include 🎉🤣 emojis
