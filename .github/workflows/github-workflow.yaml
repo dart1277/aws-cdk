@@ -23,10 +23,10 @@ on:
         type: boolean
         description: Include 🎉🤣 emojis
         required: false
-      environment:
-        type: environment
-        required: false
-        description: Environment to use
+#      environment:
+#        type: environment
+#        required: false
+#        description: Environment to use
       branch-name:
         description: "Branch name to run the build for"
         required: false
