@@ -33,6 +33,7 @@ on:
 
 env:
   CURRENT_BRANCH: "$([ -z '${{ github.event.inputs.branch-name }}'  ] && echo ${{ github.ref_name }} || echo ${{ github.event.inputs.branch-name }})"
+  SECRET_VAL1: ${{ secrets.VAL1 }}
 
 jobs:
   build:
