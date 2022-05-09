@@ -94,9 +94,8 @@ jobs:
       - run: echo "Secret env.VAL1 ${{ env.SECRET_VAL1 }}"
 
   resusableW:
-    runs-on: ubuntu-latest
     name: Reusable job call
-    uses: ./.github/workflows/reusable.yaml@main
+    uses: ./.github/workflows/reusable.yaml
     with:
       image: 'img1 value'
     secrets:
