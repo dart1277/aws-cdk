@@ -24,6 +24,6 @@ jobs:
       - run: |
           echo "${{ secrets.secret1 }}"
           echo "${{ inputs.image }}"
-          echo "${{ env.B }}"
+          #echo "${{ env.B }}"
       - id: step2
         run: echo "::set-output name=outputa::output-a-value 1"
