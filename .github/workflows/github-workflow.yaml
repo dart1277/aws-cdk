@@ -33,7 +33,7 @@ on:
         required: true
         default: [self-hosted, Linux]
         options:
-        - [self-hosted, Linux]
+        - self-hosted
         - ubuntu-latest
 jobs:
   build:
