@@ -87,11 +87,18 @@ jobs:
           input-value: 'Sub action input value'
       - run: echo "Sub action return value ${{ steps.foo.outputs.value1 }}"
         shell: bash
+      - name: Add variables to github path and env
+        shell: bash
+        run: |
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          echo "DYNAMIC_ENV_VAR=${{ env.B }}" >> $GITHUB_ENV
+
       - name: Print environment
         run: printenv
       - run: echo "Github path ${{ github.path }}"
       - run: echo "Secret VAL1 ${{ secrets.VAL1 }}"
       - run: echo "Secret env.VAL1 ${{ env.SECRET_VAL1 }}"
+        working-directory: '.'
 
   resusableW:
     needs: build
@@ -104,8 +111,14 @@ jobs:
 
   reusableWOut:
     runs-on: ubuntu-latest
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
     name: Reusable job out
-    needs: resusableW
+    needs: [resusableW]
+    continue-on-error: true
+    permissions:
+      deployments: write # create deployment
+      contents: read # access repo
+      actions: read # is this required ?
     strategy:
       matrix:
         version: [10, 12]
