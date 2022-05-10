@@ -6,6 +6,13 @@ on:
   pull_request:
     branches:
       - main
+  # workflow_run:
+  #   types:
+  #     - completed # requested
+  #   workflows:
+  #     - "0 Workflow"
+  #   branches:
+  #     - "main"
   workflow_dispatch:
     inputs:
       account:
