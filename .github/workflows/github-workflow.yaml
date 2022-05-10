@@ -191,7 +191,6 @@ jobs:
           step: start
           token: ${{ secrets.GITHUB_TOKEN }}
           env: Release-env
-          env_url: "https://google.com/${{ github.run_number }}-${{ github.run_attempt }}"
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -212,6 +211,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           status: ${{ job.status }}
           env: ${{ steps.deployment.outputs.env }}
+          env_url: "https://google.com/${{ github.run_number }}-${{ github.run_attempt }}"
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
           logs: https://github.com/${{ github.repository }}/commit/${{ github.sha }}/checks
 
