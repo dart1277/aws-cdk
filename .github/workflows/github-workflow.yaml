@@ -46,13 +46,15 @@ jobs:
     name: Build and test demo job
     env:
       A: 'b'
-    environment:
-      name: dev
-      url: https://google.com
     defaults:
       run:
         working-directory: '.'
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+
       - name: Setep env
         run: |
           echo "B='b env val'" >> $GITHUB_ENV
@@ -101,7 +103,23 @@ jobs:
       - run: echo "Github path ${{ github.path }}"
       - run: echo "Secret VAL1 ${{ secrets.VAL1 }}"
       - run: echo "Secret env.VAL1 ${{ env.SECRET_VAL1 }}"
-        working-directory: '.'
+        working-directory: '.' # command working directory
+
+      - name: Create artifact
+        run: echo "1st artifact" > file.txt
+
+      - name: Upload artifact  
+        uses: actions/upload-artifact@v3
+        if: success() # failure()
+        with:
+          name: my-artifact
+          if-no-files-found: error
+          retention-days: 5
+          path: |
+            file.txt
+            # path/output/bin/
+            # path/output/test-results
+            # !path/**/*.tmp
 
   resusableW:
     needs: build
@@ -129,4 +147,60 @@ jobs:
       - run: echo ${{ needs.resusableW.outputs.out1 }} ${{ matrix.version }}
         name: Print reusable output
         shell: bash
+
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deployment job
+    needs: [reusableWOut]
+    environment:
+      name: dev
+      url: https://google.com
+    steps:
+
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: my-artifact
+          path: out/file.txt
+
+      - name: Print artifact contents
+        shell: bash
+        timeout-minutes: 1
+        run: |
+          echo $(cat ./out/file.txt) 
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            Changes in this Release
+            - First Change
+            - Second Change
+          draft: false
+          prerelease: false
+
+      - name: start deployment
+        uses: bobheadxi/deployments@v1
+        id: deployment
+        with:
+          step: start
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: release-${{ github.run_attempt }}
+
+
+      - name: update deployment status
+        uses: bobheadxi/deployments@v1
+        if: always()
+        with:
+          step: finish
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
+          env: ${{ steps.deployment.outputs.env }}
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+          #logs: https://github.com/${{ github.repository }}/${{ github.sha }}/checks 
 
