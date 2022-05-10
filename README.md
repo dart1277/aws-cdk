@@ -1,3 +1,4 @@
+[![GitHub Actions Demo](https://github.com/dart1277/aws-cdk/actions/workflows/github-workflow.yaml/badge.svg?branch=main)](https://github.com/dart1277/aws-cdk/actions/workflows/github-workflow.yaml)
 
 # Welcome to your CDK Python project!
 

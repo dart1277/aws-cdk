@@ -175,8 +175,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: ${{ github.ref_name }}-${{ github.run_attempt }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ github.ref_name }}-${{ github.run_attempt }} # will fail deployment if tag exists (tag should change on re-run)
+          release_name: Release ${{ github.run_attempt }}
           body: |
             Changes in this Release
             - First Change
