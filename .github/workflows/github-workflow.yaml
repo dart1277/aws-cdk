@@ -212,5 +212,5 @@ jobs:
           status: ${{ job.status }}
           env: ${{ steps.deployment.outputs.env }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
-          #logs: https://github.com/${{ github.repository }}/${{ github.sha }}/checks 
+          logs: https://github.com/${{ github.repository }}/commit/${{ github.sha }}/checks
 
