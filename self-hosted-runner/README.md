@@ -16,4 +16,8 @@ docker kill --signal=SIGINT runner
 
 curl -X POST -H "Authorization: token $ACCESS_TOKEN" https://api.github.com/repos/dart1277/aws-cdk/actions/runners/registration-token
 
+curl -X GET -H "Authorization: token $ACCESS_TOKEN" https://api.github.com/repos/dart1277/aws-cdk/deployments
+
+curl -X DELETE -H "Authorization: token $ACCESS_TOKEN" https://api.github.com/repos/dart1277/aws-cdk/deployments/
+
 -- not working with private repo -- curl -X POST -H "Authorization: token $ACCESS_TOKEN" https://api.github.com/orgs/dart1277/aws-cdk/actions/runners/registration-token
