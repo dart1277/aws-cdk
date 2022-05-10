@@ -192,6 +192,16 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           env: release-${{ github.run_attempt }}
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: 123 #${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: 456 #${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+#          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+#          role-external-id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
+#          role-duration-seconds: 1200
+#          role-session-name: MySessionName
 
       - name: update deployment status
         uses: bobheadxi/deployments@v1
