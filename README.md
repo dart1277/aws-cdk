@@ -1,5 +1,4 @@
-[![Dev build](https://github.com/dart1277/aws-cdk/actions/workflows/github-workflow.yaml/badge.svg?branch=main)](https://github.com/dart1277/aws-cdk/actions/workflows/github-workflow.yaml)
-
+[![GitHub Actions Demo](https://github.com/dart1277/aws-cdk/actions/workflows/github-workflow.yaml/badge.svg)](https://github.com/dart1277/aws-cdk/actions/workflows/github-workflow.yaml)
 # Welcome to your CDK Python project!
 
 You should explore the contents of this project. It demonstrates a CDK app with an instance of a stack (`cdk_sample_stack`)
