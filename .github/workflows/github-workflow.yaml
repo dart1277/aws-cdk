@@ -180,6 +180,12 @@ jobs:
           pip install awscli --upgrade --user
           aws --version
 
+      - name: Docker run
+        shell: bash
+        run: |
+          docker run --rm --name temp-run hello-world
+
+
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
