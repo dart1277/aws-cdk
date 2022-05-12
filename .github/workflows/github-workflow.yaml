@@ -13,6 +13,8 @@ on:
   #     - "0 Workflow"
   #   branches:
   #     - "main"
+
+  # on GitHub a good catch all branch protection pattern is **/*
   workflow_dispatch:
     inputs:
       account:
@@ -163,6 +165,20 @@ jobs:
       name: dev
       url: https://google.com
     steps:
+      - name: Setup pip bin path
+        shell: bash
+        run: echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Setup python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.9
+
+      - name: Install aws cli
+        shell: bash
+        run: |
+          pip install awscli --upgrade --user
+          aws --version
 
       - name: Download artifact
         uses: actions/download-artifact@v3
