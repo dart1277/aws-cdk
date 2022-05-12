@@ -12,6 +12,7 @@ cd /home/docker/actions-runner
 
 cleanup() {
     echo "Removing runner..."
+    REG_TOKEN=$(curl -sX POST -H "Authorization: token ${ACCESS_TOKEN}" https://api.github.com/repos/${ORGANIZATION}/actions/runners/registration-token | jq .token --raw-output)
     ./config.sh remove --unattended --token ${REG_TOKEN}
 }
 
