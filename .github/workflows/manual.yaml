@@ -1,0 +1,26 @@
+name: Manually triggered workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      account-type:
+        default: dev
+        required: false
+        description: Type of deployment account
+        type: choice
+        options:
+          - dev
+          - test
+          - prod
+
+jobs:
+  manual-job:
+    runs-on: ubuntu-18.04
+    name: Manual job
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - name: Manual step
+        shell: bash
+        run: echo "${{ github.event.inputs.account-type }}"
