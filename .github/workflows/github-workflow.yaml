@@ -197,6 +197,12 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
+      - name: List files after checkout
+        shell: bash
+        run: |
+          ls -al
+          echo "Working dir $PWD"
+
       - name: Setup pip bin path
         shell: bash
         run: echo "$HOME/.local/bin" >> $GITHUB_PATH
