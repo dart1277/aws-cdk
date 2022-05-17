@@ -153,6 +153,17 @@ jobs:
       matrix:
         version: [10, 12]
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Docker run
+        shell: bash
+        run: |
+          docker run --rm --workdir=/opt -v $PWD:/opt python:3.9-bullseye bash -c "echo 'wtf' > ad.txt"
+          # sudo rm -R /opt/runner/actions-runner/_work/*
+
       - run: echo ${{ needs.resusableW.outputs.out1 }} ${{ matrix.version }}
         name: Print reusable output
         shell: bash
@@ -165,6 +176,11 @@ jobs:
       name: dev
       url: https://google.com
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+
       - name: Setup pip bin path
         shell: bash
         run: echo "$HOME/.local/bin" >> $GITHUB_PATH
@@ -230,12 +246,13 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           env: Release-env
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+#      - name: Configure AWS Credentials # TODO enable this
+#        uses: aws-actions/configure-aws-credentials@v1
+#        with:
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          aws-region: us-east-1
+
 #          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
 #          role-external-id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
 #          role-duration-seconds: 1200
