@@ -158,20 +158,33 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - name: Docker run
-        shell: bash
-        run: |
-          docker run --rm --workdir=/opt -v $PWD:/opt python:3.9-bullseye bash -c "echo 'wtf' > ad.txt"
-          # sudo rm -R /opt/runner/actions-runner/_work/*
-
       - run: echo ${{ needs.resusableW.outputs.out1 }} ${{ matrix.version }}
         name: Print reusable output
         shell: bash
 
+  docker-test:
+    runs-on: [self-hosted, Linux]
+    needs: [resusableW]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Docker run
+        shell: bash
+        run: |
+          chmod -R a+w $PWD
+          docker run --rm --workdir=/opt --user 3002:3002 -v $PWD:/opt python:3.9-bullseye bash -c "echo 'wtf' > ad.txt"
+          ls -al
+          # sudo rm -R $PWD/* 
+          # sudo rm -R $(realpath $PWD/../)
+          ls -al
+
   deploy:
     runs-on: [self-hosted, Linux] # ubuntu-latest
     name: Deployment job
-    needs: [reusableWOut]
+    needs: [docker-test]
     environment:
       name: dev
       url: https://google.com
