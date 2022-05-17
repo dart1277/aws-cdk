@@ -177,7 +177,7 @@ jobs:
           chmod -R a+w $PWD
           docker run --rm --workdir=/opt --user 3002:3002 -v $PWD:/opt python:3.9-bullseye bash -c "echo 'wtf' > ad.txt"
           ls -al
-          # sudo rm -R $PWD/* 
+          sudo rm -R $PWD/*
           # sudo rm -R $(realpath $PWD/../)
           ls -al
 
