@@ -75,7 +75,7 @@ jobs:
       - name: Dont fail if command fails
         run: |
           [[ -z "${{ env.BB }}" ]] \
-          && echo "MY_ENV_VAR=${{ env.BB }}" >> $GITHUB_ENV # 1st and 2nd lines can be repeated multiple times
+          && echo "MY_ENV_VAR=${{ env.BB }}" >> $GITHUB_ENV # 1st and 2nd lines can be repeated multiple times \
           || echo "Feature not available" # returns 0 exit status if previous commands fail, colon can be used insted ':' 
           
 
