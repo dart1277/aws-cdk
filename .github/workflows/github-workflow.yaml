@@ -53,7 +53,7 @@ env:
 
 jobs:
   build:
-    runs-on: [self-hosted, Linux] # ubuntu-latest # [self-hosted, Linux] #
+    runs-on: ubuntu-latest # [self-hosted, Linux] #
     name: Build and test demo job
     env:
       A: 'b'
@@ -150,7 +150,7 @@ jobs:
         run: echo "${{ steps.stp1id.outputs.var1 }}"
 
   cleanup-build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest #[self-hosted, Linux]
     needs: [build]
     if: always()
     steps:
@@ -169,7 +169,7 @@ jobs:
       secret1: ${{ secrets.VAL1 }}
 
   reusableWOut:
-    runs-on: [self-hosted, Linux] # ubuntu-latest
+    runs-on: ubuntu-latest #[self-hosted, Linux]
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
     name: Reusable job out
     needs: [resusableW]
@@ -192,7 +192,7 @@ jobs:
         shell: bash
 
   docker-test:
-    runs-on: [self-hosted, Linux]
+    runs-on: ubuntu-latest #[self-hosted, Linux]
     needs: [resusableW]
     steps:
       - name: Checkout
@@ -214,7 +214,7 @@ jobs:
           ls -al
 
   deploy:
-    runs-on: [self-hosted, Linux] # ubuntu-latest
+    runs-on: ubuntu-latest #[self-hosted, Linux]
     name: Deployment job
     needs: [docker-test]
     environment:
@@ -316,32 +316,33 @@ jobs:
 #          role-duration-seconds: 1200
 #          role-session-name: MySessionName
 
-      - name: Update cloudfront distro
-        run: |
-          # https://stackoverflow.com/questions/42624579/update-cloudfront-configuration-using-awscli
-          CLOUDFRONT_DISTRIBUTION_ID=E2C3RNL2F4MRMQ
-          OLD_ORIGIN="origin-placeholder.dev"
-          NEW_ORIGIN="origin2-zaid.s3.us-west-2.amazonaws.com"
-          ETAG=$(aws cloudfront get-distribution --id $CLOUDFRONT_DISTRIBUTION_ID | jq -r .ETag)
-          aws cloudfront get-distribution --id $CLOUDFRONT_DISTRIBUTION_ID | \
-          sed "s|OLD_ORIGIN|NEW_ORIGIN|g" \
-          jq '.Distribution.DistributionConfig' > config.json
-          aws cloudfront update-distribution --id $CLOUDFRONT_DISTRIBUTION_ID --distribution-config "file://config.json" --if-match $ETAG # > /dev/null
-          # aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
-          rm config.json
-
-      - name: Delete Cloudwatch logs with prefix
-        run: |
-          # docker rmi $(docker images | cut -d ' ' -f 1 | grep img-prefix)
-          # docker images | sed -E 's/\s+/ /g' | cut -d ' ' -f 3 | sed 1,5d | tr '\n' ' '
-          # s3api list-buckets --query Owner.Id --output text
-          # s3 sync s3://ab . --include=*.txt
-          # s3 cp --recursive --acl bucket-owner-full-control --metadata-directive REPLACE --region us-east-1 --profile xx s3://src1 s3://dst1 
-          MY_PREFIX="stack-"
-          DELETE_DAYS=$(date +%s000 -d "-7 days")
-          aws logs describe-log-groups --no-paginate --log-group-name-prefix $MY_PREFIX --region us-east-1 \
-          jq --raw-output --arg time_window $DELETE_DAYS '.logGroups | .[] | select(.creationTime < ($time_window | tonumber) | .logGroupName)' \
-          | tr -d '\r' | xargs -t -I % aws logs delete-log-group --region us-east-1 --log-group-name %
+#      - name: Update cloudfront distro
+#        run: |
+#          # https://stackoverflow.com/questions/42624579/update-cloudfront-configuration-using-awscli
+#          CLOUDFRONT_DISTRIBUTION_ID=E2C3RNL2F4MRMQ
+#          OLD_ORIGIN="origin-placeholder.dev"
+#          NEW_ORIGIN="origin2-zaid.s3.us-west-2.amazonaws.com"
+#          ETAG=$(aws cloudfront get-distribution --id $CLOUDFRONT_DISTRIBUTION_ID | jq -r .ETag)
+#          aws cloudfront get-distribution --id $CLOUDFRONT_DISTRIBUTION_ID | \
+#          sed "s|OLD_ORIGIN|NEW_ORIGIN|g" \
+#          jq '.Distribution.DistributionConfig' > config.json
+#          aws cloudfront update-distribution --id $CLOUDFRONT_DISTRIBUTION_ID --distribution-config "file://config.json" --if-match $ETAG # > /dev/null
+#          # aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
+#          rm config.json
+#
+#      - name: Delete Cloudwatch logs with prefix
+#        run: |
+#          # docker rmi $(docker images | cut -d ' ' -f 1 | grep img-prefix)
+#          # docker images | sed -E 's/\s+/ /g' | cut -d ' ' -f 3 | sed 1,5d | tr '\n' ' '
+#          # s3api list-buckets --query Owner.Id --output text
+#          # s3 sync s3://ab . --include=*.txt
+#          # s3 cp --recursive --acl bucket-owner-full-control --metadata-directive REPLACE --region us-east-1 --profile xx s3://src1 s3://dst1
+#
+#          MY_PREFIX="stack-"
+#          DELETE_DAYS=$(date +%s000 -d "-7 days")
+#          aws logs describe-log-groups --no-paginate --log-group-name-prefix $MY_PREFIX --region us-east-1 \
+#          jq --raw-output --arg time_window $DELETE_DAYS '.logGroups | .[] | select(.creationTime < ($time_window | tonumber) | .logGroupName)' \
+#          | tr -d '\r' | xargs -t -I % aws logs delete-log-group --region us-east-1 --log-group-name %
 
       - name: update deployment status
         uses: bobheadxi/deployments@v1

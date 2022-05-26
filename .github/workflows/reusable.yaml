@@ -16,7 +16,7 @@ on:
 
 jobs:
   build:
-    runs-on: [self-hosted, Linux]  # ubuntu-latest
+    runs-on: ubuntu-latest #[self-hosted, Linux]
     outputs:
       output1: ${{ steps.step2.outputs.outputa }}
     steps:
