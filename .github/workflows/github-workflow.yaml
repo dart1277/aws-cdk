@@ -156,8 +156,8 @@ jobs:
     steps:
       - name: Clean build dir
         run: |
-        echo ${{ needs.build.outputs.jobvar1 }}
-        "[ -d ${{ github.workspace }} ] && sudo rm -R ${{ github.workspace }} && mkdir -p ${{ github.workspace }} "
+          echo ${{ needs.build.outputs.jobvar1 }}
+          "[ -d ${{ github.workspace }} ] && sudo rm -R ${{ github.workspace }} && mkdir -p ${{ github.workspace }} "
 
   resusableW:
     needs: [cleanup-build]
