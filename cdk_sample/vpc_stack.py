@@ -54,6 +54,7 @@ class VpcStack(Stack):
                                     rule_action=ec2.Action.ALLOW,
                                     direction=ec2.TrafficDirection.INGRESS
                                     )
+            
             isolated_nacl.add_entry("DbNACLEgress{0}".format(subnet_id * 100),
                                     rule_number=subnet_id * 100,
                                     cidr=ec2.AclCidr.ipv4(subnet.node.default_child.cidr_block),
