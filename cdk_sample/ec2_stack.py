@@ -41,6 +41,7 @@ class Ec2Stack(Stack):
 
         alb.connections.allow_from_any_ipv4(ec2.Port.tcp(80),
                                             "Internet Access ALB 80")
+        
         listener = alb.add_listener("Web",
                                     port=80,
                                     open=True
