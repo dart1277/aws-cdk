@@ -26,6 +26,7 @@ class Ec2Stack(Stack):
                              instance_name="Bastion Host",
                              instance_type=ec2.InstanceType(instance_type_identifier=ec2_type)
                              )
+
         ssm_policy = iam.PolicyStatement(
             effect=iam.Effect.ALLOW,
             resources=["*"],
@@ -40,6 +41,7 @@ class Ec2Stack(Stack):
 
         alb.connections.allow_from_any_ipv4(ec2.Port.tcp(80),
                                             "Internet Access ALB 80")
+        
         listener = alb.add_listener("Web",
                                     port=80,
                                     open=True
