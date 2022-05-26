@@ -259,7 +259,7 @@ jobs:
           sudo apt-get install curl jq unzip
           curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
           unzip awscliv2.zip
-          sudo $PWD/aws/install
+          sudo $PWD/aws/install --update
           rm -r aws awscliv2.zip
           aws --version
 
