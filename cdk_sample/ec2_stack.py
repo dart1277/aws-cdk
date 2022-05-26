@@ -26,6 +26,7 @@ class Ec2Stack(Stack):
                              instance_name="Bastion Host",
                              instance_type=ec2.InstanceType(instance_type_identifier=ec2_type)
                              )
+
         ssm_policy = iam.PolicyStatement(
             effect=iam.Effect.ALLOW,
             resources=["*"],
