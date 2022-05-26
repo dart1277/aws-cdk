@@ -48,6 +48,8 @@ env:
   CURRENT_BRANCH: "${{ !github.event.inputs.branch-name && github.ref_name || github.event.inputs.branch-name }}"
   SECRET_VAL1: "$([ -z '${{ github.event.inputs.secret-val1 }}'  ] && echo ${{ secrets.VAL1 }} || echo '${{ github.event.inputs.secret-val1 }}')"
   B: 'b env'
+  CURRENT_REF: ${{ github.ref }}
+  LEGACY_ENV: ${{ github.ref == 'refs/heads/main' && secrets.A_SECRET }}
 
 jobs:
   build:
@@ -58,15 +60,24 @@ jobs:
     defaults:
       run:
         working-directory: '.'
+    outputs:
+      jobvar1: ${{ steps.stp1id.outputs.var1 }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           ref: ${{ github.ref }}
 
-      - name: Setep env
+      - name: Setup env
         run: |
           echo "B='b env val'" >> $GITHUB_ENV
+
+      - name: Dont fail if command fails
+        run: |
+          [[ -z "${{ env.BB }}" ]] \
+          && echo "MY_ENV_VAR=${{ env.BB }}" >> $GITHUB_ENV # 1st and 2nd lines can be repeated multiple times
+          || echo "Feature not available" # returns 0 exit status if previous commands fail, colon can be used insted ':' 
+          
 
       - if: always()
         run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
@@ -130,8 +141,26 @@ jobs:
             # path/output/test-results
             # !path/**/*.tmp
 
+      - name: Set variable
+        id: stp1id
+        run: |
+          echo "::set-output name=var1::$(echo "Step1OutputValue")"
+
+      - name: Get variable
+        run: echo "${{ steps.stp1id.outputs.var1 }}"
+
+  cleanup-build:
+    runs-on: ubuntu-18.04
+    needs: [build]
+    if: always()
+    steps:
+      - name: Clean build dir
+        run: |
+        echo ${{ needs.build.outputs.jobvar1 }}
+        "[ -d ${{ github.workspace }} ] && sudo rm -R ${{ github.workspace }} && mkdir -p ${{ github.workspace }} "
+
   resusableW:
-    needs: build
+    needs: [cleanup-build]
     name: Reusable job call
     uses: ./.github/workflows/reusable.yaml
     with:
@@ -221,10 +250,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-venv-
 
-      - name: Install aws cli
+      - name: Install aws cli v2
         shell: bash
         run: |
-          pip install awscli --upgrade --user
+          # pip install awscli --upgrade --user
+          # aws --version
+          sudo apt-get update -y
+          sudo apt-get install curl jq unzip
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo $PWD/aws/install
+          rm -r aws awscliv2.zip
           aws --version
 
       - name: Docker run
@@ -279,6 +315,33 @@ jobs:
 #          role-external-id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
 #          role-duration-seconds: 1200
 #          role-session-name: MySessionName
+
+      - name: Update cloudfront distro
+        run: |
+          # https://stackoverflow.com/questions/42624579/update-cloudfront-configuration-using-awscli
+          CLOUDFRONT_DISTRIBUTION_ID=E2C3RNL2F4MRMQ
+          OLD_ORIGIN="origin-placeholder.dev"
+          NEW_ORIGIN="origin2-zaid.s3.us-west-2.amazonaws.com"
+          ETAG=$(aws cloudfront get-distribution --id $CLOUDFRONT_DISTRIBUTION_ID | jq -r .ETag)
+          aws cloudfront get-distribution --id $CLOUDFRONT_DISTRIBUTION_ID | \
+          sed "s|OLD_ORIGIN|NEW_ORIGIN|g" \
+          jq '.Distribution.DistributionConfig' > config.json
+          aws cloudfront update-distribution --id $CLOUDFRONT_DISTRIBUTION_ID --distribution-config "file://config.json" --if-match $ETAG # > /dev/null
+          # aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
+          rm config.json
+
+      - name: Delete Cloudwatch logs with prefix
+        run: |
+          # docker rmi $(docker images | cut -d ' ' -f 1 | grep img-prefix)
+          # docker images | sed -E 's/\s+/ /g' | cut -d ' ' -f 3 | sed 1,5d | tr '\n' ' '
+          # s3api list-buckets --query Owner.Id --output text
+          # s3 sync s3://ab . --include=*.txt
+          # s3 cp --recursive --acl bucket-owner-full-control --metadata-directive REPLACE --region us-east-1 --profile xx s3://src1 s3://dst1 
+          MY_PREFIX="stack-"
+          DELETE_DAYS=$(date +%s000 -d "-7 days")
+          aws logs describe-log-groups --no-paginate --log-group-name-prefix $MY_PREFIX --region us-east-1 \
+          jq --raw-output --arg time_window $DELETE_DAYS '.logGroups | .[] | select(.creationTime < ($time_window | tonumber) | .logGroupName)' \
+          | tr -d '\r' | xargs -t -I % aws logs delete-log-group --region us-east-1 --log-group-name %
 
       - name: update deployment status
         uses: bobheadxi/deployments@v1
