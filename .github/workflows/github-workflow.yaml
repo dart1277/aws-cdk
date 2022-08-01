@@ -3,9 +3,19 @@ on:
   push:
     branches:
       - main
+    tags:
+      - '**'
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - closed
     branches:
       - main
+    tags:
+      - '**'
+
   # workflow_run:
   #   types:
   #     - completed # requested
@@ -355,4 +365,24 @@ jobs:
           env_url: "https://google.com/${{ github.run_number }}-${{ github.run_attempt }}"
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
           logs: https://github.com/${{ github.repository }}/commit/${{ github.sha }}/checks
+
+  deployCond:
+    runs-on: ubuntu-latest #[self-hosted, Linux]
+    # if: ${{ startsWith(github.ref, 'refs/tags') }}
+    name: Deployment job 2
+    needs: [deploy]
+    environment:
+      name: dev
+      url: https://google.com
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+      - name: Print event
+        shell: bash
+        run: |
+          echo ${{ github.event.action }}
+          echo ${{ github.ref }}
+          echo "${{ toJSON(github.event) }}"
 
