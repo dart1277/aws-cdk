@@ -384,6 +384,8 @@ jobs:
         run: |
           echo ${{ github.event.action }}
           echo ${{ github.ref }}
+          echo ${{ github.base_ref }}
+          echo ${{ github.head_ref }}
           echo ${{ github.event.pull_request.head.ref }}
           echo '${{ toJSON(github.event) }}'
 
