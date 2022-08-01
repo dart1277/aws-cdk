@@ -6,8 +6,15 @@ on:
     tags:
       - '**'
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - closed
     branches:
       - main
+    tags:
+      - '**'
 
   # workflow_run:
   #   types:
@@ -375,5 +382,7 @@ jobs:
       - name: Print event
         shell: bash
         run: |
+          echo ${{ github.event.action }}
+          echo ${{ github.ref }}
           echo "${{ toJSON(github.event) }}"
 
