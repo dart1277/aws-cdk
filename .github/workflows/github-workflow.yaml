@@ -375,5 +375,5 @@ jobs:
       - name: Print event
         shell: bash
         run: |
-          echo ${{ toJSON(github.event) }}
+          echo "${{ toJSON(github.event) }}"
 
