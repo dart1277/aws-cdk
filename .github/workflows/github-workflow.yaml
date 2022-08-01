@@ -4,7 +4,7 @@ on:
     branches:
       - main
 #    tags:
-#      - '**'
+#      - '**' # allows to trigger workflow on tag push
   pull_request:
     types:
       - opened
@@ -13,8 +13,8 @@ on:
       - closed
     branches:
       - main
-    tags:
-      - '**'
+#    tags:
+#      - '**' # filters pr workflow runs
 
   # workflow_run:
   #   types:
